@@ -19,8 +19,17 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from images.views import (
+    SatelliteImageListCreate,SatelliteImageDetail,
+    AnnotatedSatelliteImageListCreate, AnnotatedSatelliteImageDetail
+) 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/images/', SatelliteImageListCreate.as_view(), name='image-list-create'),
+    path('api/images/<int:pk>/', SatelliteImageDetail.as_view(), name='image-detail'),
+    path('api/annotated-images/', AnnotatedSatelliteImageListCreate.as_view(), name='annotated-image-list-create'),
+    path('api/annotated-images/<int:pk>/', AnnotatedSatelliteImageDetail.as_view(), name='annotated-image-detail'),
 ]
 
 if settings.DEBUG:
