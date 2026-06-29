@@ -1,5 +1,6 @@
 env/
 .venv/
+venv/
 __pycache__/
 .pyc
 .env
@@ -7,3 +8,11 @@ __pycache__/
 .gitignore
 
 media/
+
+test.jpg
+mock_ai.py
+ai_worker.py
+
+dataset/
+runs/
+*.pt

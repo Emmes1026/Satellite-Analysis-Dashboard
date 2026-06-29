@@ -5,7 +5,16 @@ __pycache__
 .pyc
 .env
 
-media/
 
-backend/test.jpg
-backend/mock_ai.py
+
+*.jpg
+mock_ai.py
+ai_worker.py
+ai_train.py
+test_sahi.py
+*.pt
+
+dataset/
+runs/
+media/
+sahi_results/

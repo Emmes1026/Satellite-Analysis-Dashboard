@@ -1,11 +1,12 @@
 from django.shortcuts import render
 
+
 from rest_framework import generics
-from .models import SatelliteImage, AnnotatedSatelliteImage
-from .serializers import SatelliteImageSerializer, AnnotatedSatelliteImageSerializer
+from .models import SatelliteImage, DetectionResult
+from .serializers import SatelliteImageSerializer, DetectionResultSerializer
 
 class SatelliteImageListCreate(generics.ListCreateAPIView):
-    queryset = SatelliteImage.objects.all()
+    queryset = SatelliteImage.objects.filter(is_analyzed = False)
     serializer_class = SatelliteImageSerializer
 
 class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -13,10 +14,14 @@ class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SatelliteImageSerializer
 
 
-class AnnotatedSatelliteImageListCreate(generics.ListCreateAPIView):
-    queryset = AnnotatedSatelliteImage.objects.all()
-    serializer_class = AnnotatedSatelliteImageSerializer
+class DetectionResultListCreate(generics.ListCreateAPIView):
+    queryset = DetectionResult.objects.all()
+    serializer_class = DetectionResultSerializer
 
-class AnnotatedSatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = AnnotatedSatelliteImage.objects.all()
-    serializer_class = AnnotatedSatelliteImageSerializer
+    def perform_create(self, serializer):
+        detection = serializer.save()
+        image_instance = detection.satellite_image_source
+        image_instance.is_analyzed = True
+        image_instance.save()
+
+    

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import SatelliteImage, AnnotatedSatelliteImage
+from .models import SatelliteImage, DetectionResult
 
 admin.site.register(SatelliteImage)
-admin.site.register(AnnotatedSatelliteImage)
+admin.site.register(DetectionResult)
 
 # Register your models here.

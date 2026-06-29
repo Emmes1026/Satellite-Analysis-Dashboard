@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import SatelliteImage,AnnotatedSatelliteImage
+from .models import SatelliteImage,DetectionResult
 
 class SatelliteImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = SatelliteImage
         fields = '__all__'
 
-class AnnotatedSatelliteImageSerializer(serializers.ModelSerializer):
+class DetectionResultSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AnnotatedSatelliteImage
+        model = DetectionResult
         fields = '__all__'

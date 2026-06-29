@@ -12,6 +12,9 @@ services:
       DB_NAME: ${DB_NAME}
     depends_on:
       - db
+    command: >
+      sh -c "python manage.py migrate && 
+             python manage.py runserver 0.0.0.0:8000"
   db:
     image: postgres:16-alpine
     environment:
@@ -21,6 +24,13 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  ai_engine:
+    build: ./ai_module
+    volumes:
+      - ./ai_module:/app
+    depends_on:
+      - web
 
 volumes:
   postgres_data:

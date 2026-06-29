@@ -5,18 +5,18 @@ class SatelliteImage(models.Model):
     image = models.ImageField(upload_to='satellitesImages/', verbose_name="Image file")
     latitude = models.FloatField(null=True, blank=True, verbose_name="Latitude")
     longitude = models.FloatField(null=True, blank=True, verbose_name="Longitude")
+    is_analyzed = models.BooleanField(default=False, verbose_name="Was AI analyzed?")
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Upload date")
 
     def __str__(self):
         return self.name
 
 
-class AnnotatedSatelliteImage(models.Model):
-    name = models.CharField(max_length=255, verbose_name="Image name")
-    image = models.ImageField(upload_to='annotated_images/', verbose_name="Image file")
-    ship_number = models.IntegerField()
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Upload date")
+class DetectionResult(models.Model):
     satellite_image_source = models.ForeignKey(SatelliteImage, on_delete=models.CASCADE)
+    ship_number = models.IntegerField(verbose_name="Detected ships count")
+    raw_detections = models.JSONField(default=list, verbose_name="Raw bounding boxes data")
+    analyzed_at = models.DateTimeField(auto_now_add=True, verbose_name="Analysis date")
 
     def __str__(self):
-        return self.name
+        return f"Result for: {self.satellite_image_source.name}"
