@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 
+/*
 @custom-variant dark (&:is(.dark *));
 
 .counter {
@@ -313,3 +314,4 @@
     @apply font-sans;
   }
 }
+*/
