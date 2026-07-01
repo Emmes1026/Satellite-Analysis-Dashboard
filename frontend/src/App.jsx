@@ -13,13 +13,14 @@ import {
   FieldDescription,
   FieldLabel,
 } from "@/components/ui/field"
-import { Button } from "@/components/ui/button" 
+import { Button } from "@/components/ui/button"
 
 
 
 function App() {
 
   const [isLoading, setIsLoading] = useState(false)
+  const [result, setResult] = useState(null)
 
   async function handleSubmit(e) {
  
@@ -35,6 +36,8 @@ function App() {
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`)
     }
+    let response_back = await response.json()
+    setResult(response_back)
 
   } catch (error) {
     console.error(error.message);
@@ -56,7 +59,7 @@ function App() {
         
         <TabsContent value="main" className="flex flex-col grow">
 
-          <form className="w-fit mx-auto border-2 bg-slate-400 rounded-lg flex flex-row flex-wrap items-end mt-4 p-4 gap-4" onSubmit={handleSubmit}>
+          <form className="w-3/4 mx-auto border-2 bg-slate-400 rounded-lg flex flex-row flex-wrap items-end place-content-center mt-4 p-4 gap-4" onSubmit={handleSubmit}>
 
             <Field className="max-w-50">
               <FieldLabel htmlFor="input-field-image-name">
@@ -86,9 +89,15 @@ function App() {
 
           </form>
 
-          <div className="grow">
+          {result && (
+            <div className="w-3/4 mx-auto border-2 bg-slate-400 rounded-lg flex flex-col grow p-4 mt-6 items-center truncate">
+              <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
+              <p className="text-lg md:text-xl"> {result.name} </p>
 
-          </div>
+              <img src={result.image} alt="Photo" className="max-w-full max-h-125 object-fit rounded-md"/>
+            </div>
+          )}
+
 
           <div className="flex">
           </div>          
