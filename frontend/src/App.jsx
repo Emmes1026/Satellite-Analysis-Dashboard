@@ -23,7 +23,7 @@ function App() {
 
   async function handleSubmit(e) {
  
-  const url = "http://localhost:8000";
+  const url = "http://localhost:8000/api/images/";
   e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
@@ -62,24 +62,24 @@ function App() {
               <FieldLabel htmlFor="input-field-image-name">
                 Image name <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input name="image_name" id="input-field-image-name" type="text" placeholder="Enter image name" required/>
+              <Input name="name" id="input-field-image-name" type="text" placeholder="Enter image name" required/>
             </Field>
 
             <Field className="max-w-70">
               <FieldLabel htmlFor="input-field-image">
                 Image <span className="text-destructive">*</span>
               </FieldLabel>
-              <Input id="input-field-image" type="file" accept="image/*" required/>
+              <Input name="image" id="input-field-image" type="file" accept="image/*" required/>
             </Field>
 
             <Field className="max-w-20">
               <FieldLabel htmlFor="input-field-latitude">Latitude (optional)</FieldLabel>
-              <Input id="input-field-latitude" type="number"/>
+              <Input name="latitude" id="input-field-latitude" type="number" min="-90" max="90" step="any"/>
             </Field>
 
             <Field className="max-w-20">
               <FieldLabel htmlFor="input-field-longitude">Longitude (optional)</FieldLabel>
-              <Input id="input-field-longitude" type="number"/>
+              <Input name="longitude" id="input-field-longitude" type="number" min="-180" max="180" step="any"/>
             </Field>
 
             <Button type="submit" disabled={isLoading} >Submit</Button>
