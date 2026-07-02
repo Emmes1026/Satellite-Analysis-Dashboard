@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { useQuery } from "@tanstack/react-query"
+import { 
+  useQuery, 
+  useMutation 
+} from "@tanstack/react-query"
 
 
 
@@ -58,26 +61,31 @@ function App() {
 
   const isAnalyzing = resultId && !detections?.raw_detections;
 
-  async function handleSubmit(e) {
- 
-  const url = "http://localhost:8000/api/images/";
-  e.preventDefault();
-  const form = e.target;
-  const formData = new FormData(form);
-
-  try {
-    const response = await fetch(url, { method: "POST", body: formData })
-    
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`)
+  const { mutate: uploadImage } = useMutation({
+    mutationFn: async (newImage) => {
+      
+      const response = await fetch("http://localhost:8000/api/images/", {
+        method: "POST",
+        body: newImage,
+      });
+      if (!response.ok) throw new Error("fetch error");
+      return response.json();
+    },
+    onSuccess: (newPhoto) => {
+      setResult(newPhoto);
     }
-    let response_back = await response.json()
-    setResult(response_back)
+  });
 
-  } catch (error) {
-    console.error(error.message);
-  }
-}
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    
+    const form = e.target;
+    const formData = new FormData(form)
+
+    uploadImage(formData)
+
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
