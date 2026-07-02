@@ -24,4 +24,10 @@ class DetectionResultListCreate(generics.ListCreateAPIView):
         image_instance.is_analyzed = True
         image_instance.save()
 
+
+class DetectionResultDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DetectionResult.objects.all()
+    serializer_class = DetectionResultSerializer
+    lookup_field = 'satellite_image_source'
+
     

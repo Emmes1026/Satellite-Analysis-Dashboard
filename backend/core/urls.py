@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from images.views import (
     SatelliteImageListCreate,SatelliteImageDetail,
-    DetectionResultListCreate
+    DetectionResultListCreate,DetectionResultDetail
 ) 
 
 urlpatterns = [
@@ -29,7 +29,7 @@ urlpatterns = [
     path('api/images/', SatelliteImageListCreate.as_view(), name='image-list-create'),
     path('api/images/<int:pk>/', SatelliteImageDetail.as_view(), name='image-detail'),
     path('api/detections/', DetectionResultListCreate.as_view(), name='detection-list'),
-
+    path('api/detections/<int:satellite_image_source>/', DetectionResultDetail.as_view(), name='detection-detail'),
 ]
 
 if settings.DEBUG:
