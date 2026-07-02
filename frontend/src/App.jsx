@@ -22,7 +22,7 @@ import { useQuery } from "@tanstack/react-query"
 
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false)
+
   const [result, setResult] = useState(null);
 
   const resultId = result?.id;
@@ -56,7 +56,7 @@ function App() {
     }
   })
 
-
+  const isAnalyzing = resultId && !detections?.raw_detections;
 
   async function handleSubmit(e) {
  
@@ -64,7 +64,7 @@ function App() {
   e.preventDefault();
   const form = e.target;
   const formData = new FormData(form);
-  setIsLoading(true);
+
   try {
     const response = await fetch(url, { method: "POST", body: formData })
     
@@ -76,8 +76,6 @@ function App() {
 
   } catch (error) {
     console.error(error.message);
-  } finally {
-    setIsLoading(false);
   }
 }
 
@@ -120,7 +118,7 @@ function App() {
               <Input name="longitude" id="input-field-longitude" type="number" min="-180" max="180" step="any"/>
             </Field>
 
-            <Button type="submit" disabled={isLoading} >Submit</Button>
+            <Button type="submit" disabled={isAnalyzing} >Submit</Button>
 
           </form>
 
@@ -129,7 +127,15 @@ function App() {
               <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
               <p className="text-lg md:text-xl"> {result.name} </p>
 
-              <img src={result.image} alt="Photo" className="max-w-full max-h-125 object-fit rounded-md"/>
+              <div className="relative">
+                <img src={result.image} alt="Photo" className="max-w-full max-h-125 object-fit rounded-md"/>
+                
+                {isAnalyzing && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+                    <Spinner/>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
