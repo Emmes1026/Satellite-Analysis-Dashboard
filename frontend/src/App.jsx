@@ -1,5 +1,7 @@
-import './App.css'
-import { useState } from 'react';
+import "./App.css"
+import { 
+  useEffect,
+  useState } from "react";
 import { 
   Tabs, 
   TabsContent, 
@@ -14,13 +16,47 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
+import { useQuery } from "@tanstack/react-query"
 
 
 
 function App() {
-
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState(null);
+
+  const resultId = result?.id;
+
+  const { data: detections, isFetching, isLoading: isRadarLoading  } = useQuery({
+    queryKey: ["detections", resultId],
+    queryFn: async () => {
+      const response = await fetch(
+        "http://localhost:8000/api/detections/" + resultId + "/"
+      );
+
+      if (response.status === 404) {
+        return null;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`)
+      }
+
+      return await response.json();
+    },
+    enabled: !!resultId,
+    refetchInterval: (query) => {
+      const actualData = query.state.data;
+
+      if (actualData && actualData.raw_detections) {
+        return false;
+      }
+
+      return 2000;
+    }
+  })
+
+
 
   async function handleSubmit(e) {
  
@@ -29,10 +65,9 @@ function App() {
   const form = e.target;
   const formData = new FormData(form);
   setIsLoading(true);
-
   try {
     const response = await fetch(url, { method: "POST", body: formData })
-
+    
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`)
     }
@@ -50,7 +85,7 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Tabs defaultValue="main" className="flex flex-col grow">
 
-        <div className=" mx-auto border-2 bg-slate-400 rounded-lg flex place-content-center mt-6 p-2">
+        <div className=" mx-auto border-2 rounded-lg flex place-content-center mt-6 p-2">
             <TabsList>
               <TabsTrigger value="main">Main Page</TabsTrigger>
               <TabsTrigger value="gallery">Gallery</TabsTrigger>
@@ -59,7 +94,7 @@ function App() {
         
         <TabsContent value="main" className="flex flex-col grow">
 
-          <form className="w-3/4 mx-auto border-2 bg-slate-400 rounded-lg flex flex-row flex-wrap items-end place-content-center mt-4 p-4 gap-4" onSubmit={handleSubmit}>
+          <form className="w-3/4 mx-auto border-2 rounded-lg flex flex-row flex-wrap items-end place-content-center mt-4 p-4 gap-4" onSubmit={handleSubmit}>
 
             <Field className="max-w-50">
               <FieldLabel htmlFor="input-field-image-name">
@@ -90,7 +125,7 @@ function App() {
           </form>
 
           {result && (
-            <div className="w-3/4 mx-auto border-2 bg-slate-400 rounded-lg flex flex-col grow p-4 mt-6 items-center truncate">
+            <div className="w-3/4 mx-auto border-2 rounded-lg flex flex-col grow p-4 mt-6 items-center truncate">
               <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
               <p className="text-lg md:text-xl"> {result.name} </p>
 
