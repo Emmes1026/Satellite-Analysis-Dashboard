@@ -7,7 +7,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+RUN pip install --no-cache-dir torch==2.12.1+cpu torchvision==0.27.1+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
 
 COPY requirements_worker.txt .
 RUN pip install --no-cache-dir -r requirements_worker.txt
