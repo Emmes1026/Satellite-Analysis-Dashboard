@@ -27,6 +27,7 @@ import {
 function App() {
 
   const [result, setResult] = useState(null);
+  const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
 
   const resultId = result?.id;
 
@@ -135,9 +136,35 @@ function App() {
               <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
               <p className="text-lg md:text-xl"> {result.name} </p>
 
-              <div className="relative">
-                <img src={result.image} alt="Photo" className="max-w-full max-h-125 object-fit rounded-md"/>
+              <div className="relative w-fit mx-auto">
+                <img src={result.image} onLoad={(e) => setImageSize({ width: e.target.naturalWidth, height: e.target.naturalHeight })} alt="Photo" className="max-w-full max-h-125 rounded-md"/>
                 
+                {detections?.raw_detections && detections.raw_detections.map((box, index) => {
+
+                  const topPercent = (box.miny / imageSize.height) * 100;
+                  const leftPercent = (box.minx / imageSize.width) * 100;
+                  const widthPercent = (box.maxx - box.minx) / imageSize.width * 100;
+                  const heightPercent = (box.maxy - box.miny) / imageSize.height * 100;
+
+
+                  return (
+                    <div 
+                      key={index}
+                      className="absolute border-2 border-red-500 bg-red-500/20" 
+                      style={{
+                        top: `${topPercent}%`,
+                        left: `${leftPercent}%`,
+                        width: `${widthPercent}%`,
+                        height: `${heightPercent}%`
+                      }}
+                    >
+                      <span className="absolute -top-5 left-0 bg-red-500 text-white text-xs px-1 rounded whitespace-nowrap">
+                        {box.name} {(box.score_value * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  );
+                })}
+
                 {isAnalyzing && (
                   <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
                     <Spinner/>
