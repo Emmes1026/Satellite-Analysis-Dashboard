@@ -71,6 +71,23 @@ function App() {
 
   const isAnalyzing = resultId && !detections?.raw_detections;
 
+  const detectedShips = detections?.raw_detections || [];
+  const totalShips = detectedShips.length;
+
+  let avgConf = 0;
+  let maxConf = 0;
+  let minConf = 0;
+
+  if (totalShips > 0) {
+    const confidences = detectedShips.map(ship => ship.score_value);
+    
+    maxConf = (Math.max(...confidences) * 100).toFixed(0);
+    minConf = (Math.min(...confidences) * 100).toFixed(0);
+
+    const sum = confidences.reduce((acc, val) => acc + val, 0);
+    avgConf = ((sum / totalShips) * 100).toFixed(0);
+  }
+
   const { mutate: uploadImage } = useMutation({
     mutationFn: async (newImage) => {
       
@@ -184,6 +201,44 @@ function App() {
 
 
           <div className="flex">
+            {totalShips > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Total Number of Detected Ships
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{totalShips}</div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Average Model Confidence
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{avgConf}%</div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">                    
+                      Margin of Certainty (Min - Max)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{minConf}% - {maxConf}%</div>
+                  </CardContent>
+                </Card>
+
+              </div>
+            )}
           </div>          
         </TabsContent>
 
