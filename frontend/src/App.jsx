@@ -156,53 +156,54 @@ function App() {
 
           </form>
 
-          {result && (
-            <div className="w-3/4 mx-auto border-2 rounded-lg flex flex-col grow p-4 mt-6 items-center truncate">
-              <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
-              <p className="text-lg md:text-xl"> {result.name} </p>
+          <div className="flex flex-col md:flex-row gap-6 w-full mt-6">
+            {result && (
+              <div className="w-full md:w-5/6 border-2 rounded-lg flex flex-col p-4 ml-6 items-center">
+                <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
+                <p className="text-lg md:text-xl"> {result.name} </p>
 
-              <div className="relative w-fit mx-auto">
-                <img src={result.image} onLoad={(e) => setImageSize({ width: e.target.naturalWidth, height: e.target.naturalHeight })} alt="Photo" className="max-w-full max-h-125 rounded-md"/>
-                
-                {detections?.raw_detections && detections.raw_detections.map((box, index) => {
+                <div className="relative w-fit mx-auto">
+                  <img src={result.image} onLoad={(e) => setImageSize({ width: e.target.naturalWidth, height: e.target.naturalHeight })} alt="Photo" className="max-w-full max-h-125 rounded-md"/>
+                  
+                  {detections?.raw_detections && detections.raw_detections.map((box, index) => {
 
-                  const topPercent = (box.miny / imageSize.height) * 100;
-                  const leftPercent = (box.minx / imageSize.width) * 100;
-                  const widthPercent = (box.maxx - box.minx) / imageSize.width * 100;
-                  const heightPercent = (box.maxy - box.miny) / imageSize.height * 100;
+                    const topPercent = (box.miny / imageSize.height) * 100;
+                    const leftPercent = (box.minx / imageSize.width) * 100;
+                    const widthPercent = (box.maxx - box.minx) / imageSize.width * 100;
+                    const heightPercent = (box.maxy - box.miny) / imageSize.height * 100;
 
 
-                  return (
-                    <div 
-                      key={index}
-                      className="absolute border-2 border-red-500 bg-red-500/20" 
-                      style={{
-                        top: `${topPercent}%`,
-                        left: `${leftPercent}%`,
-                        width: `${widthPercent}%`,
-                        height: `${heightPercent}%`
-                      }}
-                    >
-                      <span className="absolute -top-5 left-0 bg-red-500 text-white text-xs px-1 rounded whitespace-nowrap">
-                        {box.name} {(box.score_value * 100).toFixed(0)}%
-                      </span>
+                    return (
+                      <div 
+                        key={index}
+                        className="absolute border-2 border-red-500 bg-red-500/20" 
+                        style={{
+                          top: `${topPercent}%`,
+                          left: `${leftPercent}%`,
+                          width: `${widthPercent}%`,
+                          height: `${heightPercent}%`
+                        }}
+                      >
+                        <span className="absolute -top-5 left-0 bg-red-500 text-white text-xs px-1 rounded whitespace-nowrap">
+                          {box.name} {(box.score_value * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    );
+                  })}
+
+                  {isAnalyzing && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+                      <Spinner/>
                     </div>
-                  );
-                })}
-
-                {isAnalyzing && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
-                    <Spinner/>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
 
-          <div className="flex">
+          
             {totalShips > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div className="w-full md:w-1/6 grid grid-col gap-4 mr-6">
                 
                 <Card>
                   <CardHeader className="pb-2">
