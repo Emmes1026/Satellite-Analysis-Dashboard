@@ -117,51 +117,60 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Tabs defaultValue="main" className="flex flex-col grow">
 
-        <div className=" mx-auto border-2 rounded-lg flex place-content-center mt-6 p-2">
+        <Card className=" mx-auto flex place-content-center mt-6 p-2">
             <TabsList>
               <TabsTrigger value="main">Main Page</TabsTrigger>
               <TabsTrigger value="gallery">Gallery</TabsTrigger>
             </TabsList>
-        </div>
+        </Card>
         
         <TabsContent value="main" className="flex flex-col grow">
 
-          <form className="w-3/4 mx-auto border-2 rounded-lg flex flex-row flex-wrap items-end place-content-center mt-4 p-4 gap-4" onSubmit={handleSubmit}>
+          <Card className="w-3/4 mx-auto">
+            <form className=" flex flex-row flex-wrap items-end place-content-center mt-4 p-4 gap-4" onSubmit={handleSubmit}>
 
-            <Field className="max-w-50">
-              <FieldLabel htmlFor="input-field-image-name">
-                Image name <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Input name="name" id="input-field-image-name" type="text" placeholder="Enter image name" required/>
-            </Field>
+              <Field className="max-w-50">
+                <FieldLabel htmlFor="input-field-image-name">
+                  Image name <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input name="name" id="input-field-image-name" type="text" placeholder="Enter image name" required/>
+              </Field>
 
-            <Field className="max-w-70">
-              <FieldLabel htmlFor="input-field-image">
-                Image <span className="text-destructive">*</span>
-              </FieldLabel>
-              <Input name="image" id="input-field-image" type="file" accept="image/*" required/>
-            </Field>
+              <Field className="max-w-70">
+                <FieldLabel htmlFor="input-field-image">
+                  Image <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Input name="image" id="input-field-image" type="file" accept="image/*" required/>
+              </Field>
 
-            <Field className="max-w-20">
-              <FieldLabel htmlFor="input-field-latitude">Latitude (optional)</FieldLabel>
-              <Input name="latitude" id="input-field-latitude" type="number" min="-90" max="90" step="any"/>
-            </Field>
+              <Field className="max-w-20">
+                <FieldLabel htmlFor="input-field-latitude">Latitude (optional)</FieldLabel>
+                <Input name="latitude" id="input-field-latitude" type="number" min="-90" max="90" step="any"/>
+              </Field>
 
-            <Field className="max-w-20">
-              <FieldLabel htmlFor="input-field-longitude">Longitude (optional)</FieldLabel>
-              <Input name="longitude" id="input-field-longitude" type="number" min="-180" max="180" step="any"/>
-            </Field>
+              <Field className="max-w-20">
+                <FieldLabel htmlFor="input-field-longitude">Longitude (optional)</FieldLabel>
+                <Input name="longitude" id="input-field-longitude" type="number" min="-180" max="180" step="any"/>
+              </Field>
 
-            <Button type="submit" disabled={isAnalyzing} >Submit</Button>
+              <Button type="submit" disabled={isAnalyzing} >Submit</Button>
 
-          </form>
+            </form>
+          </Card>
+
 
           <div className="flex flex-col md:flex-row gap-6 w-full mt-6">
             {result && (
-              <div className="w-full md:w-5/6 border-2 rounded-lg flex flex-col p-4 ml-6 items-center">
-                <h1 className="text-xl md:text-3xl font-bold tracking-tight">IMAGE OVERVIEW</h1>
-                <p className="text-lg md:text-xl"> {result.name} </p>
-
+              <Card className="w-9/10 md:w-5/6 flex flex-col p-4 ml-6">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-center text-xl md:text-2xl font-bold tracking-tight">
+                    IMAGE OVERVIEW
+                  </CardTitle>
+                  <CardDescription className="text-center text-lg md:text-xl">
+                    {result.name}
+                  </CardDescription>
+                </CardHeader>
+                
                 <div className="relative w-fit mx-auto">
                   <img src={result.image} onLoad={(e) => setImageSize({ width: e.target.naturalWidth, height: e.target.naturalHeight })} alt="Photo" className="max-w-full max-h-125 rounded-md"/>
                   
@@ -197,13 +206,13 @@ function App() {
                     </div>
                   )}
                 </div>
-              </div>
+              </Card>
             )}
 
 
           
             {totalShips > 0 && (
-              <div className="w-full md:w-1/6 grid grid-col gap-4 mr-6">
+              <div className="w-9/10 md:w-1/6 grid grid-col gap-4 mr-6 ml-6 md:ml-0">
                 
                 <Card>
                   <CardHeader className="pb-2">
