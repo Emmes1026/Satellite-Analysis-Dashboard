@@ -21,6 +21,15 @@ import {
   useQuery, 
   useMutation 
 } from "@tanstack/react-query"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 
 
@@ -76,7 +85,6 @@ function App() {
       setResult(newPhoto);
     }
   });
-
 
   async function handleSubmit(e) {
     e.preventDefault()
