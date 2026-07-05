@@ -6,8 +6,21 @@ from .models import SatelliteImage, DetectionResult
 from .serializers import SatelliteImageSerializer, DetectionResultSerializer
 
 class SatelliteImageListCreate(generics.ListCreateAPIView):
-    queryset = SatelliteImage.objects.filter(is_analyzed = False)
     serializer_class = SatelliteImageSerializer
+
+    def get_queryset(self):
+        queryset = SatelliteImage.objects.all().order_by('-id')
+        status = self.request.query_params.get('status')
+        
+        mapping = {
+            "pending": False,
+            "analyzed": True
+        }
+        
+        if status in mapping:
+            return queryset.filter(is_analyzed=mapping[status])
+            
+        return queryset
 
 class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SatelliteImage.objects.all()
