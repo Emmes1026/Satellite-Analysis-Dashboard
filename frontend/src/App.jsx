@@ -114,6 +114,15 @@ function App() {
 
   };
 
+  const { data: galleryImages } = useQuery({
+    queryKey: ["imagesGallery"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:8000/api/images/?status=analyzed"); 
+      if (!response.ok) throw new Error("Gallery loading error");
+      return response.json();
+    }
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Tabs defaultValue="main" className="flex flex-col grow">
