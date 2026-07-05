@@ -13,7 +13,7 @@ class SatelliteImage(models.Model):
 
 
 class DetectionResult(models.Model):
-    satellite_image_source = models.ForeignKey(SatelliteImage, on_delete=models.CASCADE)
+    satellite_image_source = models.OneToOneField(SatelliteImage, on_delete=models.CASCADE)
     ship_number = models.IntegerField(verbose_name="Detected ships count")
     raw_detections = models.JSONField(default=list, verbose_name="Raw bounding boxes data")
     analyzed_at = models.DateTimeField(auto_now_add=True, verbose_name="Analysis date")
