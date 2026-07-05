@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { 
   useQuery, 
-  useMutation 
+  useMutation,
+  useQueryClient
 } from "@tanstack/react-query"
 import {
   Card,
@@ -34,9 +35,11 @@ import {
 
 
 function App() {
+  const queryClient = useQueryClient();
 
   const [result, setResult] = useState(null);
   const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
+  const [activeTab, setActiveTab] = useState("main");
 
   const resultId = result?.id;
 
@@ -123,9 +126,15 @@ function App() {
     }
   });
 
+  useEffect(() => {
+    if (detections && detections.raw_detections) {
+      queryClient.invalidateQueries({ queryKey: ["imagesGallery"] });
+    }
+  }, [detections, queryClient]);
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Tabs defaultValue="main" className="flex flex-col grow">
+      <Tabs defaultValue="main" value={activeTab} onValueChange={setActiveTab} className="flex flex-col grow">
 
         <Card className=" mx-auto flex place-content-center mt-6 p-2">
             <TabsList>
@@ -263,7 +272,18 @@ function App() {
         </TabsContent>
 
         <TabsContent value="gallery">
-
+          {galleryImages?.map((img) => (
+            <div 
+              key={img.id} 
+              className="cursor-pointer"
+              onClick={() => {
+                setResult({ id: img.id,name: img.name, image: img.image }); 
+                setActiveTab("main"); 
+              }}
+            >
+              <img src={img.image} alt="Ship analysis" />
+            </div>
+          ))}
         </TabsContent>
 
       </Tabs>
