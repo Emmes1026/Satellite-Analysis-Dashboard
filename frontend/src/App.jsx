@@ -31,6 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 
 
@@ -272,18 +273,30 @@ function App() {
         </TabsContent>
 
         <TabsContent value="gallery">
-          {galleryImages?.map((img) => (
-            <div 
-              key={img.id} 
-              className="cursor-pointer"
-              onClick={() => {
-                setResult({ id: img.id,name: img.name, image: img.image }); 
-                setActiveTab("main"); 
-              }}
-            >
-              <img src={img.image} alt="Ship analysis" />
-            </div>
-          ))}
+
+          <Card className="w-7/10 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 p-6 mt-6">
+            {galleryImages?.results.map((img) => (
+              <Card 
+                key={img.id} 
+                className="cursor-pointer"
+                onClick={() => {
+                  setResult({ id: img.id, name: img.name, image: img.image }); 
+                  setActiveTab("main"); 
+                }}
+              >
+                <CardHeader>
+                  <CardTitle>{img.name}</CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                  <AspectRatio ratio={16 / 9} className="rounded-lg bg-muted overflow-hidden">
+                    <img className="w-full h-full object-cover" src={img.image} alt="Ship analysis"/>
+                  </AspectRatio>
+                </CardContent>
+              </Card>
+            ))}
+          </Card>
+
         </TabsContent>
 
       </Tabs>
