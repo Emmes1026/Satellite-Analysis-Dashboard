@@ -3,11 +3,23 @@ from django.shortcuts import render
 
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from .models import SatelliteImage, DetectionResult
 from .serializers import SatelliteImageSerializer, DetectionResultSerializer
 
+
 class GalleryPagination(PageNumberPagination):
     page_size = 15
+
+    def get_paginated_response(self, data):
+        return Response({
+            "count": self.page.paginator.count,
+            "next": self.get_next_link(),
+            "previous": self.get_previous_link(),
+            "total_pages": self.page.paginator.num_pages,
+            "results": data,
+        })
+        
 
 class SatelliteImageListCreate(generics.ListCreateAPIView):
     queryset = SatelliteImage.objects.filter(is_analyzed=True).order_by("-id")
