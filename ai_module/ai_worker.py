@@ -15,7 +15,7 @@ detection_model = AutoDetectionModel.from_pretrained(
 
 while True:
     try:
-        response = requests.get("http://web:8000/api/images/?status=pending")
+        response = requests.get("http://web:8000/api/images/queue/pending/")
         response.raise_for_status()
         photo_list = response.json()
 
