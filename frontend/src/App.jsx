@@ -41,6 +41,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [imageSize, setImageSize] = useState({ width: 1, height: 1 });
   const [activeTab, setActiveTab] = useState("main");
+  const [page, setPage] = useState(1);
 
   const resultId = result?.id;
 
@@ -118,13 +119,14 @@ function App() {
 
   };
 
-  const { data: galleryImages } = useQuery({
-    queryKey: ["imagesGallery"],
+  const { data: galleryImages, isLoading: galleryLoading } = useQuery({
+    queryKey: ["imagesGallery", page],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/images/"); 
+      const response = await fetch("http://localhost:8000/api/images/?page=" + page ); 
       if (!response.ok) throw new Error("Gallery loading error");
       return response.json();
-    }
+    },
+    placeholderData: (prev) => prev
   });
 
   useEffect(() => {
@@ -273,28 +275,49 @@ function App() {
         </TabsContent>
 
         <TabsContent value="gallery">
+          <Card className="w-9/10 md:w-7/10 mx-auto min-h-175 mt-6 p-6">
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-4 whitespace-nowrap">
+              {galleryImages?.results.map((img) => (
+                <Card 
+                  key={img.id} 
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setResult({ id: img.id, name: img.name, image: img.image }); 
+                    setActiveTab("main"); 
+                  }}
+                >
+                  <CardHeader>
+                    <CardTitle>{img.name}</CardTitle>
+                  </CardHeader>
 
-          <Card className="w-7/10 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 p-6 mt-6">
-            {galleryImages?.results.map((img) => (
-              <Card 
-                key={img.id} 
-                className="cursor-pointer"
-                onClick={() => {
-                  setResult({ id: img.id, name: img.name, image: img.image }); 
-                  setActiveTab("main"); 
-                }}
-              >
-                <CardHeader>
-                  <CardTitle>{img.name}</CardTitle>
-                </CardHeader>
+                  <CardContent className="relative">
+                    <AspectRatio ratio={16 / 9} className="rounded-lg bg-muted overflow-hidden">
+                      <img className="w-full h-full object-cover" src={img.image} alt="Ship analysis" loading="lazy"/>
+                    </AspectRatio>
+                    {galleryLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+                        <Spinner/>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-                <CardContent>
-                  <AspectRatio ratio={16 / 9} className="rounded-lg bg-muted overflow-hidden">
-                    <img className="w-full h-full object-cover" src={img.image} alt="Ship analysis"/>
-                  </AspectRatio>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="flex justify-center gap-4 mt-auto">
+              <Button disabled={!galleryImages?.previous} onClick={() => setPage(p => p - 1)}>
+                Previous
+              </Button>
+              
+              <span className="text-sm font-medium">
+                Page {page} / {Math.ceil(galleryImages?.count / 15) || 1}
+              </span>
+              
+              <Button disabled={!galleryImages?.next} onClick={() => setPage(p => p + 1)}>
+                Next
+              </Button>
+            </div>
+
           </Card>
 
         </TabsContent>
