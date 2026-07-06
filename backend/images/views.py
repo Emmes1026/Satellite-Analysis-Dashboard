@@ -2,29 +2,26 @@ from django.shortcuts import render
 
 
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 from .models import SatelliteImage, DetectionResult
 from .serializers import SatelliteImageSerializer, DetectionResultSerializer
 
-class SatelliteImageListCreate(generics.ListCreateAPIView):
-    serializer_class = SatelliteImageSerializer
+class GalleryPagination(PageNumberPagination):
+    page_size = 15
 
-    def get_queryset(self):
-        queryset = SatelliteImage.objects.all().order_by('-id')
-        status = self.request.query_params.get('status')
-        
-        mapping = {
-            "pending": False,
-            "analyzed": True
-        }
-        
-        if status in mapping:
-            return queryset.filter(is_analyzed=mapping[status])
-            
-        return queryset
+class SatelliteImageListCreate(generics.ListCreateAPIView):
+    queryset = SatelliteImage.objects.filter(is_analyzed=True).order_by("-id")
+    serializer_class = SatelliteImageSerializer
+    pagination_class = GalleryPagination
 
 class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SatelliteImage.objects.all()
     serializer_class = SatelliteImageSerializer
+
+class WorkerAnalysisImageDetail(generics.ListAPIView):
+    queryset = SatelliteImage.objects.filter(is_analyzed=False)
+    serializer_class = SatelliteImageSerializer
+    pagination_class = None
 
 
 class DetectionResultListCreate(generics.ListCreateAPIView):
