@@ -121,7 +121,7 @@ function App() {
   const { data: galleryImages } = useQuery({
     queryKey: ["imagesGallery"],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/images/?status=analyzed"); 
+      const response = await fetch("http://localhost:8000/api/images/"); 
       if (!response.ok) throw new Error("Gallery loading error");
       return response.json();
     }
