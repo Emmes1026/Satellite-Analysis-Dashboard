@@ -310,7 +310,7 @@ function App() {
               </Button>
               
               <span className="text-sm font-medium">
-                Page {page} / {Math.ceil(galleryImages?.count / 15) || 1}
+                Page {page} / { galleryImages?.total_pages || 1}
               </span>
               
               <Button disabled={!galleryImages?.next} onClick={() => setPage(p => p + 1)}>
