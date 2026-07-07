@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 import numpy as np
@@ -12,6 +13,13 @@ detection_model = AutoDetectionModel.from_pretrained(
     confidence_threshold=0.3,
     device="cpu" 
 )
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    datefmt="%d-%m-%Y %H:%M:%S"
+)
+logger = logging.getLogger(__name__)
 
 while True:
     try:
@@ -69,20 +77,19 @@ while True:
         }
 
         post_response = requests.post("http://web:8000/api/detections/", json=request_package)
+        post_response.raise_for_status()
+        logger.info(f"success {photo_id} saved and flagged.")
 
-        if post_response.status_code == 201:
-            print(f"success {photo_id} saved and flagged.")
-        else:
-            print(f"Save error")
-            print(f"Error code: {post_response.status_code}")
-            print(f"details: {post_response.text}")
-            time.sleep(10)
+    except requests.exceptions.HTTPError as err:
+        logger.error(f"Error while saving photo {photo_id}. Status: {err.response.status_code}")
+        time.sleep(10)
+
     except requests.exceptions.ConnectionError:
-        print("Django API unavailable. Waiting 5 seconds..")
+        logger.warning("Django API unavailable. Waiting 5 seconds..")
         time.sleep(5)
         
     except Exception as e:
-        print(f"Unexpected error: {e}. Try again in 5 seconds..")
+        logger.critical(f"Unexpected error: {e}. Try again in 5 seconds..")
         time.sleep(5)
         
     time.sleep(2)
