@@ -11,33 +11,45 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: >
       sh -c "python manage.py migrate && 
              python manage.py runserver 0.0.0.0:8000"
+    healthcheck:
+      test: python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/images/')" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   ai_engine:
     build: ./ai_module
     volumes:
       - ./ai_module:/app
     depends_on:
-      - web
+      web:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
     ports: 
       - "3000:80"
     depends_on:
-      - web
+      web:
+        condition: service_healthy
         
 
 volumes:
