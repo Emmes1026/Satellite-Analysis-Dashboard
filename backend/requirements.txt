@@ -1,5 +1,5 @@
-django
-psycopg2-binary
-pillow
-djangorestframework
-django-cors-headers
+django==6.0.6
+psycopg2-binary==2.9.12
+pillow==12.3.0
+djangorestframework==3.17.1
+django-cors-headers==4.9.0
