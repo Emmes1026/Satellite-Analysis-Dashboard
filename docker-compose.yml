@@ -32,5 +32,13 @@ services:
     depends_on:
       - web
 
+  frontend:
+    build: ./frontend
+    ports: 
+      - "3000:80"
+    depends_on:
+      - web
+        
+
 volumes:
   postgres_data:
