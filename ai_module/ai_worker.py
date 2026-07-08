@@ -6,6 +6,7 @@ import numpy as np
 import requests,cv2 as opencv
 from sahi import AutoDetectionModel
 from sahi.predict import get_sliced_prediction
+from celery_app import app
 
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov8',
@@ -21,19 +22,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-while True:
+@app.task(name="process_satellite_image", bind=True,autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
+def analyze_image(self, photo_id, photo_url):
     try:
-        response = requests.get("http://web:8000/api/images/queue/pending/")
-        response.raise_for_status()
-        photo_list = response.json()
+        logger.info(f"Starting photo {photo_id} analysis")
 
-        if not photo_list:
-                time.sleep(5)
-                continue
-
-        photo_id = photo_list[0]['id']
-        photo_image = photo_list[0]['image']
-        response_image = requests.get(photo_image)
+        response_image = requests.get(photo_url)
+        response_image.raise_for_status()       
 
         image_array = np.frombuffer(response_image.content, np.uint8)
         opencv_photo = opencv.imdecode(image_array, opencv.IMREAD_COLOR)
@@ -80,16 +75,14 @@ while True:
         post_response.raise_for_status()
         logger.info(f"success {photo_id} saved and flagged.")
 
+        return 0
+
     except requests.exceptions.HTTPError as err:
         logger.error(f"Error while saving photo {photo_id}. Status: {err.response.status_code}")
-        time.sleep(10)
 
     except requests.exceptions.ConnectionError:
         logger.warning("Django API unavailable. Waiting 5 seconds..")
-        time.sleep(5)
         
     except Exception as e:
-        logger.critical(f"Unexpected error: {e}. Try again in 5 seconds..")
-        time.sleep(5)
-        
-    time.sleep(2)
+        logger.critical(f"Unexpected error: {e}. Trying again")
+        raise self.retry(exc=e, countdown=10)     
