@@ -40,12 +40,6 @@ class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SatelliteImage.objects.all()
     serializer_class = SatelliteImageSerializer
 
-class WorkerAnalysisImageDetail(generics.ListAPIView):
-    queryset = SatelliteImage.objects.filter(is_analyzed=False)
-    serializer_class = SatelliteImageSerializer
-    pagination_class = None
-
-
 class DetectionResultListCreate(generics.ListCreateAPIView):
     queryset = DetectionResult.objects.all()
     serializer_class = DetectionResultSerializer
