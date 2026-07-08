@@ -10,6 +10,7 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      REDIS_URL: "redis://redis_broker:6379/0"
     depends_on:
       db:
         condition: service_healthy
@@ -35,13 +36,27 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:8.2-alpine
+    container_name: redis_broker
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   ai_engine:
     build: ./ai_module
+    command: celery -A celery_app worker --loglevel=ERROR --pool=solo
     volumes:
       - ./ai_module:/app
     depends_on:
       web:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_URL=redis://redis_broker:6379/0
 
   frontend:
     build: ./frontend
@@ -50,7 +65,6 @@ services:
     depends_on:
       web:
         condition: service_healthy
-        
 
 volumes:
   postgres_data:
