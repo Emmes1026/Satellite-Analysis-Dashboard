@@ -142,3 +142,5 @@ CORS_ALLOW_METHODS = (
     "GET",
     "POST",
 )
+
+CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://redis_broker:6379/0")
