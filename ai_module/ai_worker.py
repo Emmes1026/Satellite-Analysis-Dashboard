@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-@app.task(name="process_satellite_image", bind=True,autoretry_for=(Exception,), retry_backoff=True, max_retries=3)
+@app.task(name="process_satellite_image", bind=True,autoretry_for=(requests.exceptions.ConnectionError,), retry_backoff=True, max_retries=3)
 def analyze_image(self, photo_id, photo_url):
     try:
         logger.info(f"Starting photo {photo_id} analysis")
@@ -79,6 +79,11 @@ def analyze_image(self, photo_id, photo_url):
 
     except requests.exceptions.HTTPError as err:
         logger.error(f"Error while saving photo {photo_id}. Status: {err.response.status_code}")
+
+        if err.response.status_code >= 500 and err.response.status_code < 600:
+            raise
+        elif err.response.status_code >= 400 and err.response.status_code < 500:
+            raise ValueError(f"Validation Error (400) for photo {photo_id}") from None
 
     except requests.exceptions.ConnectionError:
         logger.warning("Django API unavailable. Waiting 5 seconds..")
