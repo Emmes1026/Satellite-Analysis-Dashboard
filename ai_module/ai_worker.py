@@ -10,8 +10,8 @@ from celery_app import app
 
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov8',
-    model_path='ships_v4.pt', 
-    confidence_threshold=0.3,
+    model_path='ships_v5.pt', 
+    confidence_threshold=0.6,
     device="cpu" 
 )
 
