@@ -280,7 +280,7 @@ function App() {
               {galleryImages?.results.map((img) => (
                 <Card 
                   key={img.id} 
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:bg-slate-100"
                   onClick={() => {
                     setResult({ id: img.id, name: img.name, image: img.image }); 
                     setActiveTab("main"); 
