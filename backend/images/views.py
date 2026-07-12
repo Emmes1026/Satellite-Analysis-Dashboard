@@ -35,12 +35,7 @@ class SatelliteImageListCreate(generics.ListCreateAPIView):
             args=[image_id, image_path]
         )
         
-
-class SatelliteImageDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SatelliteImage.objects.all()
-    serializer_class = SatelliteImageSerializer
-
-class DetectionResultListCreate(generics.ListCreateAPIView):
+class DetectionResultCreate(generics.CreateAPIView):
     queryset = DetectionResult.objects.all()
     serializer_class = DetectionResultSerializer
 
@@ -51,7 +46,7 @@ class DetectionResultListCreate(generics.ListCreateAPIView):
         image_instance.save()
 
 
-class DetectionResultDetail(generics.RetrieveUpdateDestroyAPIView):
+class DetectionResultDetail(generics.RetrieveAPIView):
     queryset = DetectionResult.objects.all()
     serializer_class = DetectionResultSerializer
     lookup_field = 'satellite_image_source'
