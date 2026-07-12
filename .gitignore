@@ -11,6 +11,7 @@ ai_train.py
 test_sahi.py
 *.pt
 !samples/*
+!assets/*
 
 dataset/
 runs/
