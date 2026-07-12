@@ -7,6 +7,9 @@ import requests,cv2 as opencv
 from sahi import AutoDetectionModel
 from sahi.predict import get_sliced_prediction
 from celery_app import app
+from model_checker import ensure_model_exists
+
+ensure_model_exists()
 
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov8',
