@@ -51,7 +51,7 @@ function App() {
     queryKey: ["detections", resultId],
     queryFn: async () => {
       const response = await fetch(
-        "http://API_BASE_URL:8000/api/detections/" + resultId + "/"
+        API_BASE_URL + "/api/detections/" + resultId + "/"
       );
 
       if (response.status === 404) {
@@ -99,7 +99,7 @@ function App() {
   const { mutate: uploadImage } = useMutation({
     mutationFn: async (newImage) => {
       
-      const response = await fetch("http://API_BASE_URL:8000/api/images/", {
+      const response = await fetch(API_BASE_URL + "/api/images/", {
         method: "POST",
         body: newImage,
       });
@@ -124,7 +124,7 @@ function App() {
   const { data: galleryImages, isLoading: galleryLoading } = useQuery({
     queryKey: ["imagesGallery", page],
     queryFn: async () => {
-      const response = await fetch("http://API_BASE_URL:8000/api/images/?page=" + page ); 
+      const response = await fetch(API_BASE_URL + "/api/images/?page=" + page ); 
       if (!response.ok) throw new Error("Gallery loading error");
       return response.json();
     },
