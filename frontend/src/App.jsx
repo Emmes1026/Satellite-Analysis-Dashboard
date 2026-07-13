@@ -36,6 +36,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 
 function App() {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
   const queryClient = useQueryClient();
 
   const [result, setResult] = useState(null);
@@ -49,7 +51,7 @@ function App() {
     queryKey: ["detections", resultId],
     queryFn: async () => {
       const response = await fetch(
-        "http://localhost:8000/api/detections/" + resultId + "/"
+        "http://API_BASE_URL:8000/api/detections/" + resultId + "/"
       );
 
       if (response.status === 404) {
@@ -97,7 +99,7 @@ function App() {
   const { mutate: uploadImage } = useMutation({
     mutationFn: async (newImage) => {
       
-      const response = await fetch("http://localhost:8000/api/images/", {
+      const response = await fetch("http://API_BASE_URL:8000/api/images/", {
         method: "POST",
         body: newImage,
       });
@@ -122,7 +124,7 @@ function App() {
   const { data: galleryImages, isLoading: galleryLoading } = useQuery({
     queryKey: ["imagesGallery", page],
     queryFn: async () => {
-      const response = await fetch("http://localhost:8000/api/images/?page=" + page ); 
+      const response = await fetch("http://API_BASE_URL:8000/api/images/?page=" + page ); 
       if (!response.ok) throw new Error("Gallery loading error");
       return response.json();
     },
