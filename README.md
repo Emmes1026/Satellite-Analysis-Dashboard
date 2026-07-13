@@ -26,7 +26,7 @@ The project is fully containerized. To run it locally:
 
 1. **Clone the repository:**
 ```bash
-git clone --branch v0.1.0-mvp https://github.com/Emmes1026/Satellite-Analysis-Dashboard.git
+git clone --branch v0.1.1-mvp https://github.com/Emmes1026/Satellite-Analysis-Dashboard.git
 
 cd Satellite-Analysis-Dashboard
 ```
@@ -158,6 +158,14 @@ Migrate the detection pipeline to process Synthetic Aperture Radar data, elimina
 
 * **[ ] GeoTIFF Support:** 
 Implement rasterio / GDAL to read spatial metadata and dynamically adjust inference parameters based on the image's GSD.
+
+## Troubleshooting & Known Issues
+
+1. Image uploads hanging in "Pending" state. (Ubuntu/Linux)
+
+* **Cause:** If you are testing this project locally on Ubuntu and using the default Firefox browser, the strict Snap sandbox mechanism may silently block the browser's permission to read the image file from your disk during a POST request.
+
+* **Solution:** Install a non-sandboxed browser directly on your system. If running the project inside a VM, you can bypass this completely by accessing the dashboard from your Host OS browser using the VM's local IP address.
 
 ## License
 
