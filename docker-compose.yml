@@ -60,11 +60,12 @@ services:
       - REDIS_URL=redis://redis_broker:6379/0
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        - VITE_API_URL=${BACKEND_API_URL:-http://localhost:8000}
     ports: 
       - "3000:80"
-    environment:
-      - VITE_API_URL=${BACKEND_API_URL:-http://localhost:8000}
     depends_on:
       web:
         condition: service_healthy
